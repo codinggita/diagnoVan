@@ -9,10 +9,10 @@ import {
   ShieldCheck,
   ArrowLeft
 } from "lucide-react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function UserProfile() {
-  const navigate = useNavigate();
+
   const location = useLocation();
   const user = location.state?.user || {};
 

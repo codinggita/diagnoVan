@@ -13,10 +13,10 @@ import {
   Info,
   ShieldPlus
 } from "lucide-react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function ForgotPassword() {
-  const navigate = useNavigate();
+
   const location = useLocation();
   const { email: initialEmail } = location.state || {};
   const [email, setEmail] = useState(initialEmail || "")

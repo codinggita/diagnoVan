@@ -11,10 +11,10 @@ import {
   LogOut,
   ChevronRight
 } from "lucide-react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function BookingConfirmation() {
-  const navigate = useNavigate();
+
   const location = useLocation();
   const { bookingData, user } = location.state || {};
 
