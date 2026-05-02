@@ -1,3 +1,9 @@
+# Root .gitignore for diagnoVan
+
+# Environment / Sensitive files
+.env
+.github
+
 # Logs
 logs
 *.log
@@ -7,9 +13,16 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Dependencies
+node_modules/
+Frontend/node_modules/
+
+# Production / Build
+dist/
+dist-ssr/
+Frontend/dist/
+
+# Local env files
 *.local
 
 # Editor directories and files

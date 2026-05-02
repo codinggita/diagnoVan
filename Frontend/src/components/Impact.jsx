@@ -7,6 +7,13 @@ const stats = [
   { label: "RESPONSE TIME", value: "24h" }
 ];
 
+const particles = [...Array(20)].map(() => ({
+  duration: Math.random() * 3 + 2,
+  delay: Math.random() * 2,
+  left: `${Math.random() * 100}%`,
+  top: `${Math.random() * 100}%`,
+}));
+
 export default function Impact() {
   return (
     <section id="impact" className="py-24 px-6 bg-brand-primary text-white overflow-hidden relative">
@@ -55,18 +62,18 @@ export default function Impact() {
             
             {/* Animated points overlay */}
             <div className="absolute inset-0">
-               {[...Array(20)].map((_, i) => (
-                 <motion.div
-                   key={i}
-                   animate={{ opacity: [0.2, 0.8, 0.2] }}
-                   transition={{ duration: Math.random() * 3 + 2, repeat: Infinity, delay: Math.random() * 2 }}
-                   className="absolute w-1.5 h-1.5 bg-brand-accent rounded-full shadow-[0_0_10px_#81C784]"
-                   style={{
-                     left: `${Math.random() * 100}%`,
-                     top: `${Math.random() * 100}%`
-                   }}
-                 />
-               ))}
+               {particles.map((p, i) => (
+                  <motion.div
+                    key={i}
+                    animate={{ opacity: [0.2, 0.8, 0.2] }}
+                    transition={{ duration: p.duration, repeat: Infinity, delay: p.delay }}
+                    className="absolute w-1.5 h-1.5 bg-brand-accent rounded-full shadow-[0_0_10px_#81C784]"
+                    style={{
+                      left: p.left,
+                      top: p.top
+                    }}
+                  />
+                ))}
             </div>
           </div>
           
