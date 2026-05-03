@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://diagno-van.vercel.app/sitemap.xml
+
+# Disallow admin and internal pages
+Disallow: /admin-login
+Disallow: /admin-dashboard
+Disallow: /otp
+Disallow: /forgot-password
