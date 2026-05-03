@@ -16,10 +16,34 @@ export default function AdminLogin() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    navigate("/admin-dashboard");
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("http://localhost:5001/api/auth/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        localStorage.setItem("adminToken", data.data.token);
+        navigate("/admin-dashboard");
+      } else {
+        setError(data.message || "Invalid credentials");
+      }
+    } catch (err) {
+      setError("Server connection error. Is backend running?");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -129,6 +153,8 @@ export default function AdminLogin() {
                     </div>
                     <input
                       type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       placeholder="........"
                       required
                       className="w-full bg-gray-50 border-none rounded-xl py-3 pl-12 pr-12 text-teal-950 font-bold placeholder:text-gray-300 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all text-sm"
@@ -155,13 +181,20 @@ export default function AdminLogin() {
                   <span className="text-[10px] font-medium text-gray-500 group-hover:text-teal-900 transition-colors">Remember session for 24 hours</span>
                 </div>
 
+                {error && (
+                  <div className="bg-red-50 text-red-600 p-3 rounded-xl text-xs font-bold text-center border border-red-200">
+                    {error}
+                  </div>
+                )}
+
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full bg-[#004D40] text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#00382e] transition-all shadow-xl shadow-teal-900/10 group mt-2 overflow-hidden relative"
+                  disabled={loading}
+                  className={`w-full ${loading ? 'bg-gray-400' : 'bg-[#004D40] hover:bg-[#00382e]'} text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-xl shadow-teal-900/10 group mt-2 overflow-hidden relative`}
                 >
                   <span className="relative z-10 flex items-center gap-2">
-                    Secure Login
+                    {loading ? 'Authenticating...' : 'Secure Login'}
                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>

@@ -10,6 +10,8 @@ export default function OtpVerification() {
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timeLeft, setTimeLeft] = useState(45);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const inputRefs = useRef([]);
 
   useEffect(() => {
@@ -69,11 +71,32 @@ export default function OtpVerification() {
     }
   };
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     const code = otp.join("");
     if (code.length === 6) {
-      // Navigate to dashboard after successful verification, passing user data
-      navigate("/dashboard", { state: { user: { phone } } });
+      setLoading(true);
+      setError("");
+
+      try {
+        const response = await fetch("http://localhost:5001/api/auth/verify-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone, otp: code }),
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+          localStorage.setItem("userToken", data.data.token);
+          navigate("/dashboard", { state: { user: data.data } });
+        } else {
+          setError(data.message || "Invalid OTP");
+        }
+      } catch (err) {
+        setError("Server connection error. Is backend running?");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -147,12 +170,18 @@ export default function OtpVerification() {
               ))}
             </div>
 
+            {error && (
+              <div className="bg-red-50 text-red-600 p-3 rounded-xl text-xs font-bold text-center border border-red-200 mb-6">
+                {error}
+              </div>
+            )}
+
             <button
               onClick={handleVerify}
-              disabled={otp.join("").length < 6}
-              className="w-full bg-[#004D40] text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#00382e] transition-all shadow-xl shadow-brand-primary/20 group text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={otp.join("").length < 6 || loading}
+              className={`w-full ${loading ? 'bg-gray-400' : 'bg-[#004D40] hover:bg-[#00382e]'} text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-xl shadow-brand-primary/20 group text-sm disabled:opacity-50 disabled:cursor-not-allowed`}
             >
-              Verify & Proceed
+              {loading ? "Verifying..." : "Verify & Proceed"}
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </button>
 

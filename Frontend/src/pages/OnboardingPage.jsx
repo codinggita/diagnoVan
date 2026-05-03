@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   UserPlus, 
   Truck, 
@@ -20,6 +20,49 @@ import { useNavigate } from 'react-router-dom';
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    name: '',
+    roleTitle: '',
+    email: '',
+    phone: '',
+    password: '',
+    clinicName: '',
+    region: ''
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleContinue = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch("http://localhost:5001/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        localStorage.setItem("token", data.data.token);
+        navigate('/van-specs');
+      } else {
+        setError(data.message || 'Registration failed');
+      }
+    } catch (err) {
+      setError('Server connection error. Ensure backend is running.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const sidebarItems = [
     { icon: UserPlus, label: 'Registration', active: true, path: '/onboarding' },
@@ -90,6 +133,9 @@ export default function OnboardingPage() {
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input 
                       type="text" 
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
                       placeholder="Dr. Jane Smith"
                       className="w-full pl-12 pr-4 py-4 bg-[#F2F4F7] border-none rounded-xl text-sm placeholder-gray-400 focus:ring-2 focus:ring-[#004D40] transition-all"
                     />
@@ -102,6 +148,9 @@ export default function OnboardingPage() {
                     <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input 
                       type="text" 
+                      name="roleTitle"
+                      value={formData.roleTitle}
+                      onChange={handleChange}
                       placeholder="Chief Medical Officer"
                       className="w-full pl-12 pr-4 py-4 bg-[#F2F4F7] border-none rounded-xl text-sm placeholder-gray-400 focus:ring-2 focus:ring-[#004D40] transition-all"
                     />
@@ -114,6 +163,9 @@ export default function OnboardingPage() {
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input 
                       type="email" 
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
                       placeholder="jane.smith@example.com"
                       className="w-full pl-12 pr-4 py-4 bg-[#F2F4F7] border-none rounded-xl text-sm placeholder-gray-400 focus:ring-2 focus:ring-[#004D40] transition-all"
                     />
@@ -126,7 +178,25 @@ export default function OnboardingPage() {
                     <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input 
                       type="tel" 
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
                       placeholder="(555) 123-4567"
+                      className="w-full pl-12 pr-4 py-4 bg-[#F2F4F7] border-none rounded-xl text-sm placeholder-gray-400 focus:ring-2 focus:ring-[#004D40] transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Password</label>
+                  <div className="relative group">
+                    <Save className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input 
+                      type="password" 
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="••••••••"
                       className="w-full pl-12 pr-4 py-4 bg-[#F2F4F7] border-none rounded-xl text-sm placeholder-gray-400 focus:ring-2 focus:ring-[#004D40] transition-all"
                     />
                   </div>
@@ -145,6 +215,9 @@ export default function OnboardingPage() {
                     <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input 
                       type="text" 
+                      name="clinicName"
+                      value={formData.clinicName}
+                      onChange={handleChange}
                       placeholder="Valley Health Rural Initiative"
                       className="w-full pl-12 pr-4 py-4 bg-white border-none rounded-xl text-sm placeholder-gray-400 shadow-sm focus:ring-2 focus:ring-[#004D40] transition-all"
                     />
@@ -156,8 +229,10 @@ export default function OnboardingPage() {
                   <div className="relative group cursor-pointer">
                     <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <select 
+                      name="region"
+                      value={formData.region}
+                      onChange={handleChange}
                       className="w-full pl-12 pr-12 py-4 bg-white border-none rounded-xl text-sm text-gray-400 shadow-sm focus:ring-2 focus:ring-[#004D40] appearance-none cursor-pointer transition-all"
-                      defaultValue=""
                     >
                       <option value="" disabled>Select Region...</option>
                       <option value="north">North America</option>
@@ -172,13 +247,21 @@ export default function OnboardingPage() {
             </div>
           </section>
 
+          {/* Error Message */}
+          {error && (
+            <div className="mt-6 bg-red-50 text-red-600 p-4 rounded-xl text-sm font-semibold text-center border border-red-200">
+              {error}
+            </div>
+          )}
+
           {/* Footer Action */}
           <div className="mt-8 flex justify-end">
             <button 
-              onClick={() => navigate('/van-specs')}
-              className="flex items-center gap-3 px-10 py-4 bg-[#004D40] hover:bg-[#003D33] text-white font-bold rounded-2xl shadow-xl shadow-[#004D40]/20 transition-all group"
+              onClick={handleContinue}
+              disabled={loading}
+              className={`flex items-center gap-3 px-10 py-4 ${loading ? 'bg-gray-400' : 'bg-[#004D40] hover:bg-[#003D33]'} text-white font-bold rounded-2xl shadow-xl shadow-[#004D40]/20 transition-all group`}
             >
-              Continue to Van Specs
+              {loading ? 'Saving...' : 'Save & Continue to Van Specs'}
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </button>
           </div>

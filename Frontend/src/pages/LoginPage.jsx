@@ -6,11 +6,33 @@ import { useState } from "react";
 export default function LoginPage() {
   const navigate = useNavigate();
   const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSendOTP = (e) => {
+  const handleSendOTP = async (e) => {
     e.preventDefault();
-    const displayPhone = phone.trim() ? `+91 ${phone.trim()}` : "+91 XXXXX XXXXX";
-    navigate("/otp", { state: { phone: displayPhone } });
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("http://localhost:5001/api/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        navigate("/otp", { state: { phone, demoOTP: data.demoOTP } });
+      } else {
+        setError(data.message || "Failed to send OTP");
+      }
+    } catch (err) {
+      setError("Server connection error. Is backend running?");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -97,11 +119,18 @@ export default function LoginPage() {
                 </p>
               </div>
 
+              {error && (
+                <div className="bg-red-50 text-red-600 p-3 rounded-xl text-xs font-bold text-center border border-red-200">
+                  {error}
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="w-full bg-[#004D40] text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#00382e] transition-all shadow-xl shadow-brand-primary/20 group text-sm"
+                disabled={loading}
+                className={`w-full ${loading ? 'bg-gray-400' : 'bg-[#004D40] hover:bg-[#00382e]'} text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-xl shadow-brand-primary/20 group text-sm`}
               >
-                Send OTP
+                {loading ? "Sending..." : "Send OTP"}
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </button>
             </form>
