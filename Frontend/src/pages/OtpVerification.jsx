@@ -78,7 +78,8 @@ export default function OtpVerification() {
       setError("");
 
       try {
-        const response = await fetch("http://localhost:5001/api/auth/verify-otp", {
+        const API_URL = import.meta.env.VITE_API_URL || "https://diagnovan.onrender.com";
+        const response = await fetch(`${API_URL}/api/auth/verify-otp`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ phone, otp: code }),
