@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Admin = require("../models/Admin");
+const Clinic = require("../models/Clinic");
 const generateToken = require("../utils/generateToken");
 
 // Demo OTP constant (No external SMS service required)
@@ -114,8 +115,61 @@ const adminLogin = async (req, res) => {
   }
 };
 
+// ============================================================
+// @desc    Register a new Clinic / Van Owner
+// @route   POST /api/auth/register
+// @access  Public
+// ============================================================
+const registerClinic = async (req, res) => {
+  try {
+    const { name, roleTitle, email, phone, password, clinicName, region } = req.body;
+
+    if (!name || !email || !phone || !password || !clinicName || !region) {
+      res.status(400);
+      return res.json({ success: false, message: "Please fill all required fields" });
+    }
+
+    const clinicExists = await Clinic.findOne({ email });
+
+    if (clinicExists) {
+      res.status(400);
+      return res.json({ success: false, message: "Clinic email already registered" });
+    }
+
+    const clinic = await Clinic.create({
+      name,
+      roleTitle,
+      email,
+      phone,
+      password,
+      clinicName,
+      region,
+    });
+
+    if (clinic) {
+      res.status(201).json({
+        success: true,
+        message: "Clinic registered successfully",
+        data: {
+          _id: clinic._id,
+          name: clinic.name,
+          email: clinic.email,
+          role: clinic.role,
+          token: generateToken(clinic._id),
+        },
+      });
+    } else {
+      res.status(400);
+      return res.json({ success: false, message: "Invalid clinic data" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   sendOTP,
   verifyOTP,
   adminLogin,
+  registerClinic,
 };

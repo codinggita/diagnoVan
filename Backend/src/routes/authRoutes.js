@@ -4,6 +4,7 @@ const {
   sendOTP,
   verifyOTP,
   adminLogin,
+  registerClinic,
 } = require("../controllers/authController");
 
 // ==================== Public Authentication Routes ====================
@@ -16,5 +17,8 @@ router.post("/verify-otp", verifyOTP);
 
 // 3. Admin Login with ID/Email and Password
 router.post("/admin/login", adminLogin);
+
+// 4. Register Clinic/Van Owner
+router.post("/register", registerClinic);
 
 module.exports = router;
