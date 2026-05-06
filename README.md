@@ -67,8 +67,6 @@ The **Smart Rural Diagnostic System** bridges this gap by providing a digital pl
 
 ---
 
----
-
 ## 🚀 Getting Started
 
 ### Prerequisites
