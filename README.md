@@ -1,6 +1,14 @@
 # 🚑 Smart Rural Diagnostic Van System (DiagnoVan)
 
-🚀 **[Live Deployed Project](https://diagnovan.vercel.app/)** | 🎨 **[Figma Design Link](https://www.figma.com/design/GqFTmj6H7xu6NuE6yG3rdb/Untitled?node-id=0-1&t=2wUdCGapQ9JoNpAU-1)** | ⚙️ **[Backend Deployed Link](https://diagnovan.onrender.com)** | 📖 **[Postman Documentation Link](https://documenter.getpostman.com/view/50840969/2sBXqKozwb)** | 🎥 **[YouTube Demo Video Link](https://youtu.be/6iEiHFm2S8s)**
+## 🔗 Live Deployment & Resources
+
+| Resource | Status | Link |
+| :--- | :--- | :--- |
+| 🌐 **Frontend Live** | Deployed (Vercel) | [https://diagnovan.vercel.app/](https://diagnovan.vercel.app/) |
+| ⚙️ **Backend API** | Deployed (Render) | [https://diagnovan.onrender.com](https://diagnovan.onrender.com) |
+| 🎨 **Figma Design** | Original Assets | [View on Figma](https://www.figma.com/design/GqFTmj6H7xu6NuE6yG3rdb/Untitled?node-id=0-1&t=2wUdCGapQ9JoNpAU-1) |
+| 📖 **Postman Docs** | API Reference | [View Documentation](https://documenter.getpostman.com/view/50840969/2sBXqKozwb) |
+| 🎥 **YouTube Demo** | Video Walkthrough | [Watch Presentation](https://youtu.be/6iEiHFm2S8s) |
 
 [![React](https://img.shields.io/badge/Frontend-React.js-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Backend-Node.js-339933?style=for-the-badge&logo=nodedotjs)](https://nodejs.org/)
@@ -81,10 +89,10 @@ The **Smart Rural Diagnostic System** bridges this gap by providing a digital pl
 2. Install dependencies for both frontend and backend:
    ```bash
    # For Backend
-   cd backend && npm install
+   cd Backend && npm install
    
    # For Frontend
-   cd frontend && npm install
+   cd Frontend && npm install
    ```
 3. Set up environment variables (.env):
    ```env
@@ -95,10 +103,10 @@ The **Smart Rural Diagnostic System** bridges this gap by providing a digital pl
 4. Run the application:
    ```bash
    # Backend
-   npm run dev
+   cd Backend && npm run dev
    
    # Frontend
-   npm start
+   cd Frontend && npm start
    ```
 
 ---
